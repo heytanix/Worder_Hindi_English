@@ -12,6 +12,12 @@ def save_english_subtitles():
     # Get YouTube URL from user
     url = input("Please enter the YouTube video URL: ")
     
+    # Get language preference
+    print("\nSelect language:")
+    print("1. English")
+    print("2. Hindi")
+    language_choice = input("Enter your choice (1 or 2): ")
+    
     # Extract video ID
     video_id = get_video_id(url)
     if not video_id:
@@ -29,9 +35,10 @@ def save_english_subtitles():
             print("No Hindi transcript available")
             return
             
-        # Translate to English if available
+        # Translate to English if selected
         try:
-            transcript = transcript.translate('en')
+            if language_choice == "1":  # English
+                transcript = transcript.translate('en')
         except:
             print("Could not translate to English")
             return
