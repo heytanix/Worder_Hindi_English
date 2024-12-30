@@ -1,3 +1,4 @@
 pytube
 youtube-transcript-api
 python-docx
+tkinter
