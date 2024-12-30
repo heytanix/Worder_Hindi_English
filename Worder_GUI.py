@@ -10,9 +10,10 @@ def get_video_id(url):
     video_id = re.search(r'(?:v=|\/)([0-9A-Za-z_-]{11}).*', url)
     return video_id.group(1) if video_id else None
 
-def save_english_subtitles(url_entry, status_label):
+def save_english_subtitles(url_entry, status_label, language_var):
     # Get URL from entry widget
     url = url_entry.get()
+    selected_language = language_var.get()
     
     # Extract video ID
     video_id = get_video_id(url)
@@ -31,11 +32,12 @@ def save_english_subtitles(url_entry, status_label):
             messagebox.showerror("Error", "No Hindi transcript available")
             return
             
-        # Translate to English if available
+        # Translate to selected language if available
         try:
-            transcript = transcript.translate('en')
+            if selected_language == 'English':
+                transcript = transcript.translate('en')
         except:
-            messagebox.showerror("Error", "Could not translate to English")
+            messagebox.showerror("Error", f"Could not translate to {selected_language}")
             return
             
         # Create a new Word document
@@ -78,13 +80,28 @@ def create_gui():
     url_label.pack(pady=(0, 5))
     
     url_entry = ttk.Entry(main_frame, width=50)
-    url_entry.pack(pady=(0, 20))
+    url_entry.pack(pady=(0, 10))
+    
+    # Language Selection
+    language_frame = ttk.Frame(main_frame)
+    language_frame.pack(pady=(0, 10))
+    
+    language_label = ttk.Label(language_frame, text="Select Language:")
+    language_label.pack(side=tk.LEFT, padx=(0, 10))
+    
+    language_var = tk.StringVar(value="English")
+    language_combo = ttk.Combobox(language_frame, 
+                                textvariable=language_var, 
+                                values=["English", "Hindi"],
+                                state="readonly",
+                                width=20)
+    language_combo.pack(side=tk.LEFT)
     
     # Convert Button
     convert_button = ttk.Button(
         main_frame,
         text="Convert Subtitles",
-        command=lambda: save_english_subtitles(url_entry, status_label)
+        command=lambda: save_english_subtitles(url_entry, status_label, language_var)
     )
     convert_button.pack(pady=(0, 20))
     
